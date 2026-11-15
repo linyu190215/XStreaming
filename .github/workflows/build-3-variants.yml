@@ -22,6 +22,8 @@ name: build-3-variants
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
