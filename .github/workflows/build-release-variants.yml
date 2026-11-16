@@ -62,18 +62,18 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Enable Corepack
-        run: corepack enable
 
       - name: Install JS dependencies
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
           YARN_ENABLE_TELEMETRY: "0"
-          YARN_NETWORK_TIMEOUT: "600000"
+          COREPACK_ENABLE_STRICT: "0"
         run: |
           node -v
-          yarn --version || true
-          yarn install --no-immutable
+          npm -v
+          npm install -g yarn@4.2.2
+          yarn --version
+          yarn install
           ls node_modules | head -20
 
       - name: Set up Rust with Android targets
