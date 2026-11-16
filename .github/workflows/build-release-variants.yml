@@ -67,13 +67,12 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
           YARN_ENABLE_TELEMETRY: "0"
-          COREPACK_ENABLE_STRICT: "0"
         run: |
           node -v
-          npm -v
-          npm install -g yarn@4.2.2
-          yarn --version
-          yarn install
+          mkdir -p .yarn/releases
+          curl -fsSL https://repo.yarnpkg.com/4.2.2/packages/yarnpkg-cli/bin/yarn.js -o .yarn/releases/yarn-4.2.2.cjs
+          node .yarn/releases/yarn-4.2.2.cjs --version
+          node .yarn/releases/yarn-4.2.2.cjs install
           ls node_modules | head -20
 
       - name: Set up Rust with Android targets
