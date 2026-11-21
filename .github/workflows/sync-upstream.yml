@@ -1,0 +1,37 @@
+# 每周自动把上游（Geocld/XStreaming）的更新合并到自己的 fork
+#
+# 这样做的好处：作者继续更新，你自动跟上；作者不更新了，你的 fork 也完整可用。
+# 手动触发：Actions → sync-upstream → Run workflow
+
+name: sync-upstream
+
+on:
+  schedule:
+    # 每周一 04:00（北京时间）
+    - cron: '0 20 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge upstream main
+        run: |
+          git config user.name  "sync-bot"
+          git config user.email "sync-bot@users.noreply.github.com"
+          git remote add upstream https://github.com/Geocld/XStreaming.git
+          git fetch upstream main --depth=50
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "已经是最新，无需合并"
+            exit 0
+          fi
+          git merge upstream/main --no-edit -m "chore: sync upstream $(date +%Y-%m-%d)"
+          git push origin main
